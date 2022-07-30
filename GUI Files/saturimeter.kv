@@ -1,0 +1,294 @@
+#:kivy 1.11
+
+<BlackLabel@Label>:
+    color: (1,1,1,1)
+
+<ConnectionWindow>:
+    spinner_serial: _spinner_serial
+    connection_button: _connect_button
+    connection_label: _connect_label
+    BoxLayout:
+        orientation:'vertical'
+		#padding: 20
+		#spacing: 20
+        canvas.before:
+            Color: 
+                rgba:(0.004,0.336,0.48,1)
+            Rectangle:
+                size: self.size
+                pos:self.pos
+        
+        #COM
+        BlackLabel:
+            size_hint_y:0.3
+            id:_connect_label
+            #size_hint: (1., 0.2)
+            font_size: 40
+            bold: True
+            text: "Connect the device"          
+        BlackLabel:
+            size_hint_y:0.3
+            font_size: 20
+            bold: True
+            text:"Choose the correct COM port"
+        BoxLayout:
+            orientation: 'horizontal'
+            padding: 80
+            spacing: 60
+            #size_hint: (0.5, 0.5)
+            
+            Spinner:
+                id: _spinner_serial
+                bold:True
+                text:"Serial port"
+                size_hint_x: 0.4
+                on_text: _connect_button.disabled = False
+            Button:
+                id: _connect_button
+                size_hint_x: 0.4
+                bold:True
+                text: 'Connect'
+                on_press: root.button_pressed() 
+                disabled: True
+        Label:
+            size_hint_y: 0.2
+        
+
+<MenuWindow>:
+    BoxLayout:
+        orientation:'vertical'
+		#padding: 20
+		#spacing: 20
+        canvas.before:
+            Color: 
+                rgba:(0.004,0.336,0.48,1)
+            Rectangle:
+                size: self.size
+                pos:self.pos
+        
+        connection_label : temp_label
+        connection_button : celsius_button
+        connection_button : farheneit_button
+        connection_button : config_button
+        connection_label : first_screen_label
+
+        #TITLE
+        BoxLayout:
+            orientation:'horizontal'
+            spacing: 30
+            padding: 60
+            size_hint_y: 0.3
+            BlackLabel:              
+                font_size: 40
+                bold: True
+                text:'Project 4-1: Saturimeter'
+        BlackLabel:
+            id: temp_label
+            size_hint_y: 0.1
+            font_size: 20
+            bold: True
+            text:'Choose the Temperature unit you prefer'
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint_y: 0.25
+            spacing: 40
+            padding: 40
+            
+            #celsius
+            BlackLabel:
+                id: first_screen_label
+                font_size: 20
+                bold: True
+                text:'Temperature units:'
+            
+            Button:
+                font_size: 15
+                bold: True
+                text:'Celsius'
+                group: 'g1'
+                id: celsius_button
+                on_press: 
+                    root.celsius_pressed()
+
+            #farheneit
+            Button:
+                font_size: 15
+                bold: True
+                text:'Farheneit'
+                group: 'g1'
+                id: farheneit_button
+                on_press: 
+                    root.farheneit_pressed()
+            
+        BlackLabel:
+            size_hint_y: 0.1
+            font_size: 20
+            bold: True
+            text:'Press Configuration button to enter the CONFIGURATION MENU'
+
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint_y: 0.25
+            padding: 40
+            
+            #configuration
+            Button:
+                font_size: 15
+                bold: True
+                text:'Configuration'
+                #size_hint: (1.0,0.5)
+                id: config_button
+                on_press: root.config_pressed()
+
+<SettingsWindow>:
+
+    on_enter: root.timerstart()
+    
+    BoxLayout:
+        connection_button : backtomenu_button
+        orientation:'vertical'
+        value_slider: slider1
+        padding: 40
+        spacing: 20
+        canvas.before:
+            Color: 
+                rgba:(0.004,0.336,0.48,1)
+            Rectangle:
+                size: self.size
+                pos:self.pos
+                
+        BoxLayout:
+            orientation:'horizontal'
+            spacing: 30
+            padding: 60
+            #size_hint_y: 0.5
+            BlackLabel:
+                font_size: 40
+                bold: True
+                text:'Configuration Menu'
+        #Label:
+        BoxLayout:
+            size_hint_y:None
+            height: 30
+            BlackLabel:
+                bold: True
+                text:"SpO2 Sample Rate [Hz]:  "
+                
+            Spinner:
+                id: SpO2_sample_rate
+                bold: True
+                text: "Choose"
+                values: ["50","100","200","400"]
+                on_text: root.SpO2_sample_rate_select(self.text)
+                           
+        BoxLayout:
+            size_hint_y:None
+            height: 30
+
+            BlackLabel:
+                bold: True
+                text:"SpO2 ADC Resolution [bits]:  "
+            Spinner:
+                id: LED_pulsewidth
+                bold: True
+                text: "Choose"
+                values: ["15","16","17","18"]
+                on_text: root.LED_pulsewidth_select(self.text)
+        BoxLayout:
+            size_hint_y:None
+            height: 30
+            BlackLabel:
+                bold: True
+                text:"SpO2 ADC Full Scale [nA]:"
+            Spinner:
+                id: SpO2_ADC
+                bold: True
+                text: "Choose"
+                values: ["2048","4096","8192","16384"]
+                on_text: root.SpO2_ADC_select(self.text)
+        #RED
+        BoxLayout:
+            size_hint_y:None
+            height: 30
+            BlackLabel:
+                bold: True
+                text:"Red Current [uA]:"
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Slider:
+                id: slider1
+                min: 0
+                max: 6200
+                step: 200
+                orientation: 'horizontal'
+
+            Label:
+                text: str(int(slider1.value))
+            
+            Button:
+                bold: True
+                text:"Ok"
+                on_press: root.Red_select(slider1.value)
+        #IR
+        BoxLayout:
+            size_hint_y:None
+            height: 30
+            BlackLabel:
+                bold: True
+                text:"IR LED Current [uA]:"
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Slider:
+                id: slider2
+                min: 0
+                max: 6200
+                step: 200
+                orientation: 'horizontal'
+
+            Label:
+                text: str(int(slider2.value))
+
+            Button:
+                bold: True
+                text:"Ok"
+                on_press: root.IR_select(slider2.value)
+
+        #threshold
+        BoxLayout:
+            size_hint_y:None
+            height: 30
+            BlackLabel:
+                bold: True
+                text:"Sensitivity threshold:"
+                text_size: self.size
+                halign: 'left'
+                valign: 'middle'
+            Slider:
+                id: slider3
+                min: 0
+                max: 30
+                step: 1
+                orientation: 'horizontal'
+
+            Label:
+                text: str(int(slider3.value))
+
+            Button:
+                bold: True
+                text:"Ok"
+                on_press: root.sensitivity_select(slider3.value)
+        
+        #BACK TO MENU
+        BoxLayout:
+            spacing: 10
+            orientation: 'vertical'
+            #padding: 10
+            Label:
+                size_hint_y:0.3  
+            Button:
+                id:backtomenu_button
+                bold: True
+                text: 'Back to Main Window'
+                on_press: root.go_back()
